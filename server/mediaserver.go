@@ -1303,6 +1303,11 @@ func (s *LivepeerServer) HandleRecordings(w http.ResponseWriter, r *http.Request
 	defer func() {
 		glog.V(common.VERBOSE).Infof("request=%s took=%s headers=%+v", r.URL.String(), time.Since(now), w.Header())
 	}()
+	// /recordings/<id>/index.m3u8
+	// 0:
+	// 1: recordings
+	// 2: id
+	// 3: index.m3u8
 	returnMasterPlaylist := pp[3] == "index.m3u8"
 	var track string
 	if !returnMasterPlaylist {
@@ -1483,6 +1488,7 @@ func (s *LivepeerServer) HandleRecordings(w http.ResponseWriter, r *http.Request
 	if finalize {
 		for trackName := range mainJspl.Segments {
 			mpl := mediaLists[trackName]
+			clog.V(common.VERBOSE).Infof(ctx, "before AddSegmentsToMPL, manifests=%v, trackName=%s, mpl=%v, RecordObjectStoreURL=%s", manifests, trackName, mpl, resp.RecordObjectStoreURL)
 			mainJspl.AddSegmentsToMPL(manifests, trackName, mpl, resp.RecordObjectStoreURL)
 			fileName := trackName + ".m3u8"
 			nows := time.Now()
