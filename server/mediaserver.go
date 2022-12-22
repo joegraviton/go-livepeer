@@ -1486,10 +1486,13 @@ func (s *LivepeerServer) HandleRecordings(w http.ResponseWriter, r *http.Request
 	}
 	clog.V(common.VERBOSE).Infof(ctx, "Playlist generation for took=%s", time.Since(now1))
 	if finalize {
+        clog.V(common.VERBOSE).Infof(ctx, "guoqiao: if finalize")
 		for trackName := range mainJspl.Segments {
+            clog.V(common.VERBOSE).Infof(ctx, "guoqiao: aaaaaaaaaaaaaaaaaaa")
 			mpl := mediaLists[trackName]
-			clog.V(common.VERBOSE).Infof(ctx, "before AddSegmentsToMPL, manifests=%v, trackName=%s, mpl=%v, RecordObjectStoreURL=%s", manifests, trackName, mpl, resp.RecordObjectStoreURL)
+            clog.V(common.VERBOSE).Infof(ctx, "guoqiao: before AddSegmentsToMPL, manifests=%v, trackName=%s, mpl=%v, RecordObjectStoreURL=%s", manifests, trackName, mpl, resp.RecordObjectStoreURL)
 			mainJspl.AddSegmentsToMPL(manifests, trackName, mpl, resp.RecordObjectStoreURL)
+            clog.V(common.VERBOSE).Infof(ctx, "guoqiao: bbbbbbbbbbbbbbbbbbb")
 			fileName := trackName + ".m3u8"
 			nows := time.Now()
 			_, err = sess.SaveData(ctx, fileName, mpl.Encode(), nil, 0)
@@ -1509,12 +1512,14 @@ func (s *LivepeerServer) HandleRecordings(w http.ResponseWriter, r *http.Request
 			return
 		}
 	} else if !returnMasterPlaylist {
+        clog.V(common.VERBOSE).Infof(ctx, "guoqiao: if not finalize and returnMasterPlaylist")
 		mpl := mediaLists[track]
 		if mpl != nil {
 			osUrl := ""
 			if resp != nil {
 				osUrl = resp.RecordObjectStoreURL
 			}
+            clog.V(common.VERBOSE).Infof(ctx, "guoqiao: cccccccccccccccc")
 			mainJspl.AddSegmentsToMPL(manifests, track, mpl, osUrl)
 			// check (debug code)
 			startSeq := mpl.Segments[0].SeqId
@@ -1526,19 +1531,24 @@ func (s *LivepeerServer) HandleRecordings(w http.ResponseWriter, r *http.Request
 			}
 		}
 	}
+    clog.V(common.VERBOSE).Infof(ctx, "guoqiao: ddddddddddddddd")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Expose-Headers", "Content-Length")
 	w.Header().Set("Cache-Control", "max-age=5")
 	w.Header().Set("Content-Type", "application/x-mpegURL")
 	if returnMasterPlaylist {
+        clog.V(common.VERBOSE).Infof(ctx, "guoqiao: eeeeeeeeeeeeeeee")
 		w.Header().Set("Connection", "keep-alive")
 		_, err = w.Write(masterPList.Encode().Bytes())
 	} else if track != "" {
 		mediaPl := mediaLists[track]
+        clog.V(common.VERBOSE).Infof(ctx, "guoqiao: fffffffffffff")
 		if mediaPl != nil {
+            clog.V(common.VERBOSE).Infof(ctx, "guoqiao: ggggggggg")
 			w.Header().Set("Connection", "keep-alive")
 			_, err = w.Write(mediaPl.Encode().Bytes())
 		} else {
+            clog.V(common.VERBOSE).Infof(ctx, "guoqiao: hhhhhhhhhhhhhhhhh")
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
@@ -1546,6 +1556,7 @@ func (s *LivepeerServer) HandleRecordings(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+    clog.V(common.VERBOSE).Infof(ctx, "guoqiao: iiiiiiiiiiiii")
 }
 
 //Helper Methods Begin
